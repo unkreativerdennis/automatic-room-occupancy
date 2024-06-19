@@ -69,7 +69,7 @@ blueprint:
           domain:
             - input_boolean
           multiple: false
-  source_url: https://github.com/kreene1987/automatic-room-occupancy/blob/main/automatic-room-occupancy.yaml
+  source_url: https://github.com/unkreativerdennis/automatic-room-occupancy/blob/main/automatic-room-occupancy.yaml
 variables:
   time_now: "{{ as_timestamp(now()) }}"
   media_players_str: !input media_players
@@ -79,9 +79,6 @@ variables:
   media_timeout: "{{ states('input_number.media_occupancy_timeout') | int(10) }}"
   media_is_playing:
     "{{ expand(media_players) | selectattr('state','in', media_states)
-    | list | count > 0 }}"
-  in_room:
-    "{{ expand(presence_entities) | selectattr('state','in', presence_states)
     | list | count > 0 }}"
   motion_sensor: !input motion_sensor
   motion_timeout:
@@ -140,7 +137,6 @@ action:
             \   {% if states(player) != state and timed_out %}\n      {% set ns.not_playing
             = ns.not_playing + [ player.entity_id ] %}\n    {% endif %}\n  {% endfor %}\n{%
             endfor %} {{ ns.not_playing | length >= media_players | length }}\n"
-          - "{{ not in_room }}"
         sequence:
           - service: input_boolean.turn_off
             data:
